@@ -101,8 +101,10 @@ void ShowMenu(Node*head) {
     printf("请选择操作(1-7):");
 }
 
+
+
 //添加图书
-void addBook(Node** head){
+void addBook(Node** head){//注意这里head是二级指针，因为需要修改主函数中的head指针
     BookNode newBook;
     printf("输入图书ID:");
     scanf("%d", &newBook.id);
@@ -134,15 +136,36 @@ void BorrowBook(Node*head){
 void ReturnBook(Node*head){
 }
 
-
-
 /*1.3链表操作函数*/
 
-//创建图书结点
+//创建图书结点（基本函数，供后续函数调用）
 Node* createBookNode(BookNode *book){
+    Node* newNode = (Node*)malloc(sizeof(Node));//动态分配内存空间方便后续操作
+    if(newNode == NULL){
+        printf("内存分配失败！\n");
+        return NULL;
+    }
+    newNode->book = *book;//定义原因在第18行定义的结构体 要创建一个节点必须有指针域和数据域
+    newNode->next = NULL;
+    return newNode;
 }
-// 在链表的表尾增加一个新的图书节点
-void addBookToEnd(Node* head, BookNode *book) {
+
+// 在链表的表尾增加一个新的图书节点（与上面的addBook函数配合使用）尾插法的应用
+void addBookToEnd(Node** head, BookNode *book){
+    Node*newNode = createBookNode(book);//调用上面的创建节点函数
+    if(newNode == NULL){
+        return ;
+    }
+    if(*head == NULL){
+        *head = newNode;//如果链表为空，则新节点为头节点
+    }
+    else{
+        Node* current = *head;
+        while(current->next != NULL){
+            current = current->next;
+        }
+        current->next = newNode;//将新节点添加到链表末尾
+    }
 }
 
 //创建带头结点的图书空链表
